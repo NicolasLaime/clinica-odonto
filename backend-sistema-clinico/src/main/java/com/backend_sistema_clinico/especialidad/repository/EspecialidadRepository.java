@@ -1,0 +1,13 @@
+package com.backend_sistema_clinico.especialidad.repository;
+
+import com.backend_sistema_clinico.especialidad.entity.Especialidad;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface EspecialidadRepository extends JpaRepository<Especialidad,Long> {
+    boolean existsByNombre(String nombre);
+    List<Especialidad> findByActivoTrue();
+
+
+}
