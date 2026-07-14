@@ -91,6 +91,11 @@ public class SecurityConfig {
                     // Dashboard - reportes
                     .requestMatchers(HttpMethod.GET, "/api/v1/reportes/**").hasAnyRole("ADMIN_SAAS", "ODONTOLOGO")
 
+                    // Mensajes
+                    .requestMatchers(HttpMethod.POST, "/api/v1/mensajes/guardar").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/mensajes/**").hasAnyRole("ADMIN_SAAS", "ODONTOLOGO")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/mensajes/**").hasAnyRole("ADMIN_SAAS", "ODONTOLOGO")
+
                     //crear clinica
                     .requestMatchers(HttpMethod.POST, "/api/v1/clinicas").hasRole("ADMIN_SAAS")
 

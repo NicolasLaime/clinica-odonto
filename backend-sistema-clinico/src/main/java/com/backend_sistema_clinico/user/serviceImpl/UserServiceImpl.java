@@ -1,14 +1,18 @@
 package com.backend_sistema_clinico.user.serviceImpl;
 
 import com.backend_sistema_clinico.user.dto.ActualizarUsuarioRequest;
+import com.backend_sistema_clinico.user.dto.CrearUsuarioRequest;
 import com.backend_sistema_clinico.user.dto.UserDTO;
+import com.backend_sistema_clinico.user.entity.Role;
 import com.backend_sistema_clinico.user.entity.Usuario;
 import com.backend_sistema_clinico.user.repository.UserRepository;
 import com.backend_sistema_clinico.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<Usuario> findByEmail(String email) {
@@ -69,6 +74,24 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         user.setActive(false);
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDTO crear(CrearUsuarioRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya esta registrado");
+        }
+        var usuario = Usuario.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.valueOf(request.getRole()))
+                .clinicaId(request.getClinicaId())
+                .active(true)
+                .build();
+        return toDTO(userRepository.save(usuario));
     }
 
     private UserDTO toDTO(Usuario user) {

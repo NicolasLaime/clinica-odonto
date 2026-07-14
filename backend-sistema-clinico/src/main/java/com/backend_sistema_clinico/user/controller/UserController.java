@@ -2,12 +2,15 @@ package com.backend_sistema_clinico.user.controller;
 
 
 import com.backend_sistema_clinico.user.dto.ActualizarUsuarioRequest;
+import com.backend_sistema_clinico.user.dto.CrearUsuarioRequest;
 import com.backend_sistema_clinico.user.dto.UserDTO;
 import com.backend_sistema_clinico.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +42,14 @@ public class UserController {
         userService.deactivate(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> crear(@RequestBody @Valid CrearUsuarioRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(userService.crear(request));
+    }
+
+}
 
 
 

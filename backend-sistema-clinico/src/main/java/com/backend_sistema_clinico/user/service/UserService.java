@@ -1,6 +1,7 @@
 package com.backend_sistema_clinico.user.service;
 
 import com.backend_sistema_clinico.user.dto.ActualizarUsuarioRequest;
+import com.backend_sistema_clinico.user.dto.CrearUsuarioRequest;
 import com.backend_sistema_clinico.user.dto.UserDTO;
 import com.backend_sistema_clinico.user.entity.Usuario;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ public interface UserService {
     UserDTO findById(Long id);
     UserDTO update(Long id, ActualizarUsuarioRequest request);
     void deactivate(Long id);
+    UserDTO crear(CrearUsuarioRequest request);
 
 
 }

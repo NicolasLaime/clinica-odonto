@@ -14,11 +14,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class MercadoPagoService {
 
     @Value("${app.mp.notification-url}")
     private String notificationUrl;
+
+    @Value("${app.mp.back-urls}")
+    private String backUrlsBase;
 
     public CreatePreferenceResponse crearPreferencia(CreatePreferenceRequest req) {
         try {
@@ -29,9 +31,9 @@ public class MercadoPagoService {
                     .build();
 
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:5173/turnos/" + req.getTurnoId() + "/exito")
-                    .pending("http://localhost:5173/turnos/" + req.getTurnoId() + "/pendiente")
-                    .failure("http://localhost:5173/turnos/" + req.getTurnoId() + "/error")
+                    .success(backUrlsBase + "/turnos/" + req.getTurnoId() + "/exito")
+                    .pending(backUrlsBase + "/turnos/" + req.getTurnoId() + "/pendiente")
+                    .failure(backUrlsBase + "/turnos/" + req.getTurnoId() + "/error")
                     .build();
 
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
