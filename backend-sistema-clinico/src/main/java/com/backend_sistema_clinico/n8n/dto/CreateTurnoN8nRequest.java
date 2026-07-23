@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  @NoArgsConstructor
  @AllArgsConstructor
  public class CreateTurnoN8nRequest {
+        private Long pacienteId;
         private String nombre;
         private String apellido;
         private String telefono;

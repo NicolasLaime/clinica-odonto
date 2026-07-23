@@ -25,7 +25,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Solo valida apiKey en rutas de n8n y conversaciones
-        if (path.startsWith("/api/v1/n8n/") || path.startsWith("/api/v1/conversaciones/")) {
+        if (path.startsWith("/api/v1/n8n/") || path.startsWith("/api/v1/conversaciones/") || path.startsWith("/api/v1/mensajes/guardar")) {
             String apiKey = request.getHeader("x-api-key");
 
             if (apiKey == null || apiKey.isBlank()) {

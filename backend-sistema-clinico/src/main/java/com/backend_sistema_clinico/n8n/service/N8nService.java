@@ -5,6 +5,8 @@ import com.backend_sistema_clinico.mercadopago.dto.CreatePreferenceResponse;
 import com.backend_sistema_clinico.mercadopago.services.MercadoPagoService;
 import com.backend_sistema_clinico.n8n.dto.CreateTurnoN8nRequest;
 import com.backend_sistema_clinico.n8n.dto.TurnoN8NResponse;
+import com.backend_sistema_clinico.paciente.dto.CreatePacienteDTO;
+import com.backend_sistema_clinico.paciente.dto.PacienteDTO;
 import com.backend_sistema_clinico.paciente.entity.Paciente;
 import com.backend_sistema_clinico.paciente.repository.PacienteRepository;
 import com.backend_sistema_clinico.turno.entity.EstadoTurno;
@@ -38,16 +40,22 @@ public class N8nService {
     private final RestTemplate restTemplate;
 
     public TurnoN8NResponse crearTurno(CreateTurnoN8nRequest request) {
-        Paciente paciente = pacienteRepository.findByTelefono(request.getTelefono())
-                .orElseGet(() -> pacienteRepository.save(
-                        Paciente.builder()
-                                .nombre(request.getNombre())
-                                .apellido(request.getApellido() != null ? request.getApellido() : "")
-                                .telefono(request.getTelefono())
-                                .clinicaId(request.getClinicaId())
-                                .activo(true)
-                                .build()
-                ));
+        Paciente paciente;
+        if (request.getPacienteId() != null) {
+            paciente = pacienteRepository.findById(request.getPacienteId())
+                    .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+        } else {
+            paciente = pacienteRepository.findByTelefono(request.getTelefono())
+                    .orElseGet(() -> pacienteRepository.save(
+                            Paciente.builder()
+                                    .nombre(request.getNombre())
+                                    .apellido(request.getApellido() != null ? request.getApellido() : "")
+                                    .telefono(request.getTelefono())
+                                    .clinicaId(request.getClinicaId())
+                                    .activo(true)
+                                    .build()
+                    ));
+        }
 
         Usuario odontologo = userRepository.findById(request.getOdontologoId())
                 .orElseThrow(() -> new RuntimeException("Odontólogo no encontrado"));
@@ -96,6 +104,54 @@ public class N8nService {
         turnoRepository.save(turno);
 
         return new TurnoN8NResponse(turno.getId(), mp.getInitPoint(), "PENDIENTE_PAGO");
+    }
+
+    public PacienteDTO crearPaciente(CreatePacienteDTO request, String clinicaId) {
+        Paciente p = Paciente.builder()
+                .nombre(request.getNombre())
+                .apellido(request.getApellido())
+                .email(request.getEmail())
+                .telefono(request.getTelefono())
+                .direccion(request.getDireccion())
+                .fechaNacimiento(request.getFechaNacimiento())
+                .dni(request.getDni())
+                .alergias(request.getAlergias())
+                .enfermedades(request.getEnfermedades())
+                .grupoSanguineo(request.getGrupoSanguineo())
+                .observaciones(request.getObservaciones())
+                .activo(true)
+                .clinicaId(clinicaId)
+                .build();
+        pacienteRepository.save(p);
+        return new PacienteDTO(
+                p.getId(), p.getNombre(), p.getApellido(), p.getDni(),
+                p.getEmail(), p.getTelefono(), p.getDireccion(),
+                p.getFechaNacimiento(), null, p.getAlergias(),
+                p.getEnfermedades(), p.getGrupoSanguineo(),
+                p.getObservaciones(), p.isActivo(), p.getClinicaId()
+        );
+    }
+
+    public PacienteDTO buscarPorDni(String dni, String clinicaId) {
+        return pacienteRepository.findByDniAndClinicaId(dni, clinicaId)
+                .map(p -> new PacienteDTO(
+                        p.getId(),
+                        p.getNombre(),
+                        p.getApellido(),
+                        p.getDni(),
+                        p.getEmail(),
+                        p.getTelefono(),
+                        p.getDireccion(),
+                        p.getFechaNacimiento(),
+                        null,
+                        p.getAlergias(),
+                        p.getEnfermedades(),
+                        p.getGrupoSanguineo(),
+                        p.getObservaciones(),
+                        p.isActivo(),
+                        p.getClinicaId()
+                ))
+                .orElse(null);
     }
 
 }

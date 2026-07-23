@@ -1,5 +1,6 @@
 package com.backend_sistema_clinico.user.repository;
 
+import com.backend_sistema_clinico.user.entity.Role;
 import com.backend_sistema_clinico.user.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,6 @@ public interface UserRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByEmail(String email);
     boolean existsByEmail(String email);
     List<Usuario> findByClinicaId(String clinicaId);
+    List<Usuario> findByClinicaIdAndRole(String clinicaId, Role role);
 
 }

@@ -20,5 +20,6 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
     Optional<Paciente> findByIdAndClinicaId(Long id, String clinicaId);
     List<Paciente> findByClinicaIdAndNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(
             String clinicaId, String nombre, String apellido);
+    Optional<Paciente> findByDniAndClinicaId(String dni, String clinicaId);
 
 }

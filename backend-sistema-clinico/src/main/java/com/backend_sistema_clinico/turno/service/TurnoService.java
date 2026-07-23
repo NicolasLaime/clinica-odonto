@@ -14,6 +14,7 @@ import java.util.List;
 public interface TurnoService {
     TurnoDTO create(CreateTurnoRequest request);
     TurnoDTO confirmarPago(Long turnoId);
+    TurnoDTO confirmarPagoSinAuth(Long turnoId);
     TurnoDTO findById(Long id);
     TurnoDTO cancelar(Long turnoId);
     TurnoDTO completar(Long turnoId, CompletarTurnoRequest request);

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -92,6 +93,14 @@ public class UserServiceImpl implements UserService {
                 .active(true)
                 .build();
         return toDTO(userRepository.save(usuario));
+    }
+
+    @Override
+    public List<UserDTO> findOdontologosByClinicaId(String clinicaId) {
+        return userRepository.findByClinicaIdAndRole(clinicaId, Role.ODONTOLOGO)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     private UserDTO toDTO(Usuario user) {

@@ -149,6 +149,15 @@ public class TurnoServiceImpl implements TurnoService {
     }
 
     @Override
+    public TurnoDTO confirmarPagoSinAuth(Long turnoId) {
+        Turno turno = turnoRepository.findById(turnoId)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+        turno.setEstado(EstadoTurno.CONFIRMADO);
+        turnoRepository.save(turno);
+        return toDTO(turno);
+    }
+
+    @Override
     public TurnoDTO cancelar(Long turnoId) {
         Turno turno = turnoRepository.findById(turnoId)
                 .orElseThrow(() -> new RuntimeException("Turno no encontrado"));

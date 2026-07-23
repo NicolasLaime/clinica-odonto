@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 public class UpdateConversacionRequest {
 
     private String estado;
-    private String contexto;
+    private Object contexto;
     private String clinicaId;
 }
